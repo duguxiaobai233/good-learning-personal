@@ -4,6 +4,17 @@ description: 根据教材、考纲、试卷和学习时间制定学科备考或�
 ---
 
 # Good Learning
+## 本机运行环境（安装时配置）
+
+此 Windows 电脑已配置独立 Python 和 MiKTeX 环境。运行本技能的三个 Python 脚本时，使用以下入口，它会临时设置 Python、XeLaTeX 和中文字体路径：
+
+```powershell
+& 'C:\Users\sora\.codex\skills\good-learning\scripts\run-local.ps1' render_summary_map.py 输入.json 输出.svg --png 输出.png
+& 'C:\Users\sora\.codex\skills\good-learning\scripts\run-local.ps1' render_study_pdf.py 输入.md 输出.tex --kind errors
+& 'C:\Users\sora\.codex\skills\good-learning\scripts\run-local.ps1' compile_study_pdf.py 输入.tex 输出.pdf
+```
+
+环境检查：同一入口传入 `--check`。本机路径、依赖和字体说明见 [LOCAL_SETUP.md](LOCAL_SETUP.md)。其他流程和输出要求按下文执行。
 
 帮助学习者从现有材料建立知识清单、可执行的计划和每日学习内容，并根据答题表现持续调整。用中文交流，除非用户使用其他语言或提出不同要求。
 

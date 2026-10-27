@@ -19,3 +19,9 @@
 **/__pycache__/
 *.py[cod]
 .DS_Store
+
+# Preserve local configuration and version reports in this personal archive
+!/LOCAL_SETUP.md
+!/scripts/run-local.ps1
+!/reports/
+!/reports/**
