@@ -1,5 +1,7 @@
 # Good Learning
 
+本仓库是 B 站 Good Learning 项目的个人优化与版本归档，基于 [yoli-mi/good-learning-skill](https://github.com/yoli-mi/good-learning-skill) 修改；这里的优化不是上游作者的官方发布。感谢原项目作者，原始 Git 历史与 MIT 许可证均予以保留。
+
 一个用于 AI agent 的学习与备考 skill：根据考纲、教材、真题和可用时间建立知识清单、备考计划与每日课程，再依据真实作答整理错题并调整后续安排
 
 ## 能做什么
@@ -69,8 +71,12 @@ python scripts/render_summary_map.py examples/summary-map.json summary.svg --png
 
 ## 内容边界
 
-仓库只包含 skill 指令和生成脚本，不包含教材、历年试卷、用户作答或生成的个人学习文件；使用资料时请核对来源与授权
+本归档包含 skill 指令、生成脚本、修改报告和验证示例，不包含教材、历年试卷、用户作答或真实个人学习文件；使用资料时请核对来源与授权。
 
 ## 许可证
 
 [MIT](LICENSE)
+
+## 本机定制版本与报告
+
+本归档保留上游原始历史及本机定制版本；详见 [版本导航与修改报告](reports/版本导航.md)。

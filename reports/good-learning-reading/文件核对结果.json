@@ -1,0 +1,30 @@
+{
+  "upstream_commit": "1255c4d7f0b602901100d29d85235ad2537eec31",
+  "upstream_working_tree_clean": true,
+  "text_comparison_ignores_windows_line_endings": true,
+  "original_tracked_file_count": 14,
+  "changed_original_files": [
+    "SKILL.md"
+  ],
+  "unchanged_original_files": [
+    ".gitignore",
+    "LICENSE",
+    "README.md",
+    "examples/summary-map.json",
+    "references/daily-study.md",
+    "references/latex-export.md",
+    "references/prepare-and-plan.md",
+    "references/source-search.md",
+    "references/visual-map-design.md",
+    "requirements.txt",
+    "scripts/compile_study_pdf.py",
+    "scripts/render_study_pdf.py",
+    "scripts/render_summary_map.py"
+  ],
+  "added_installed_files": [
+    "LOCAL_SETUP.md",
+    "scripts/run-local.ps1"
+  ],
+  "additional_record_file": "C:\\Users\\sora\\Documents\\Codex\\学习记录\\学习索引.md",
+  "snapshot_skill_sha256": "01e9be43ffd5622377fd01f5794fcb592d37fa290fed5c7ce0291c5a4e08c19b"
+}

@@ -1,0 +1,51 @@
+{
+  "local_change_id": "local-teaching-20261026-01",
+  "created_at_Asia_Shanghai": "2026-10-26T11:56:20+08:00",
+  "upstream_commit_at_installation": "1255c4d7f0b602901100d29d85235ad2537eec31",
+  "installed_root": "C:\\Users\\sora\\.codex\\skills\\good-learning",
+  "changed_files": [
+    "SKILL.md",
+    "references/daily-study.md",
+    "references/latex-export.md"
+  ],
+  "before_sha256": {
+    ".gitignore": "fece0f8d69025a82fc059aa5c04b425d0302a38d4415676e2781192b5669225a",
+    "examples/summary-map.json": "c13c3640396a183b33e8c13afcdd6b2d22ba12edaca68de22c13b7acbcd29b89",
+    "LICENSE": "ab76adc704d07a340163e889281a3946b368e02b4040d3ae83cd2766af555b92",
+    "LOCAL_SETUP.md": "9bb4aa4acdd992ff3e405f56718a3cd86e58c559492e33e4e52b7d092b1a66a1",
+    "README.md": "64622375eecf7170891c40808a39eea74afd212cf772177e7845ed17ed9b0105",
+    "references/daily-study.md": "49588860599294c7af096afa6999e4326c6e4466f2b0225d205d794645095ed0",
+    "references/latex-export.md": "f61dc794e83d5dd355171be54e13036fd4e7be510af1894e06728748a6ff683c",
+    "references/prepare-and-plan.md": "f07351cf896d7dc4aae4114ede0da3ca13d79a3392478247e90e8f925f944c99",
+    "references/source-search.md": "79bf2b722a50adc59d0446faee60a58a3b6954abafa77b227a14403d79a6863d",
+    "references/visual-map-design.md": "d64e87d9c3424bfdf4e837255b7412bb7c91a573323bf518d964dacccf63e0ab",
+    "requirements.txt": "eba706c9d68de87a8b421685604dbbdd6036cb833ed57c4000b1921413cdef41",
+    "scripts/compile_study_pdf.py": "3a41e2df1129ad49d3712f7ffa6e9a0b759bbdf19f85b0c2ecf037fc7dce61c4",
+    "scripts/render_study_pdf.py": "a36590a119eabaa16167e4740065cb058ec9926e4d8d77fbfe707d3a0dd5afe5",
+    "scripts/render_summary_map.py": "79476c6fa9bf6354df7c9ba3d515dc966cc4c24ffa55f782f90cfaecf6e9ef63",
+    "scripts/run-local.ps1": "2aaa5247cbb3e8b15fcf0df41f912bc74129c4566fc3b276ffda5817810fe551",
+    "SKILL.md": "01e9be43ffd5622377fd01f5794fcb592d37fa290fed5c7ce0291c5a4e08c19b"
+  },
+  "after_sha256": {
+    ".gitignore": "fece0f8d69025a82fc059aa5c04b425d0302a38d4415676e2781192b5669225a",
+    "examples/summary-map.json": "c13c3640396a183b33e8c13afcdd6b2d22ba12edaca68de22c13b7acbcd29b89",
+    "LICENSE": "ab76adc704d07a340163e889281a3946b368e02b4040d3ae83cd2766af555b92",
+    "LOCAL_SETUP.md": "9bb4aa4acdd992ff3e405f56718a3cd86e58c559492e33e4e52b7d092b1a66a1",
+    "README.md": "64622375eecf7170891c40808a39eea74afd212cf772177e7845ed17ed9b0105",
+    "references/daily-study.md": "edf016beaabad96e79ee6abf15733a43c04d0edb23741140d08fdca681c0db99",
+    "references/latex-export.md": "d3f45b75535ad60071df5366b7ba872eb3781cee16bb2316d552e23d4d800e84",
+    "references/prepare-and-plan.md": "f07351cf896d7dc4aae4114ede0da3ca13d79a3392478247e90e8f925f944c99",
+    "references/source-search.md": "79bf2b722a50adc59d0446faee60a58a3b6954abafa77b227a14403d79a6863d",
+    "references/visual-map-design.md": "d64e87d9c3424bfdf4e837255b7412bb7c91a573323bf518d964dacccf63e0ab",
+    "requirements.txt": "eba706c9d68de87a8b421685604dbbdd6036cb833ed57c4000b1921413cdef41",
+    "scripts/compile_study_pdf.py": "3a41e2df1129ad49d3712f7ffa6e9a0b759bbdf19f85b0c2ecf037fc7dce61c4",
+    "scripts/render_study_pdf.py": "a36590a119eabaa16167e4740065cb058ec9926e4d8d77fbfe707d3a0dd5afe5",
+    "scripts/render_summary_map.py": "79476c6fa9bf6354df7c9ba3d515dc966cc4c24ffa55f782f90cfaecf6e9ef63",
+    "scripts/run-local.ps1": "2aaa5247cbb3e8b15fcf0df41f912bc74129c4566fc3b276ffda5817810fe551",
+    "SKILL.md": "a319771282150a58ff36b722fd8e28d32511b2b7a33798324661e417a9dc4ae0"
+  },
+  "backup_zip": "good-learning-修改前完整备份.zip",
+  "backup_zip_sha256": "4bd06d9337375ef351ca3848f6c6cf43264043b29d2851faf9752c74c5e9189c",
+  "backup_file_count": 16,
+  "runtime_and_actual_learning_records_modified": false
+}
