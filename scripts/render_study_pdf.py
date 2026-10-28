@@ -16,6 +16,43 @@ TOKEN = re.compile(r"(\$\$[\s\S]*?\$\$|\$[^$\n]+?\$|\*\*[^*]+?\*\*|\[[^\]]+\]\([
 QUESTION = re.compile(r"^\*\*((?:[A-Z]\d+|题\s*\d+|练习\s*\d+|\d+))[.．:：]\*\*\s*(.*)$")
 HEADING = re.compile(r"^(#{1,3})\s+(.*)$")
 ORDERED = re.compile(r"^\d+\.\s+(.*)$")
+FENCE = re.compile(r"^(`{3,}|~{3,})([^`~]*)$")
+
+
+def fenced_tex(content: str, language: str, line_number: int) -> str:
+    """Render authored TikZ as a picture; preserve all other code literally."""
+    if language.lower() == "tikz":
+        # This is a format check, not a TeX sandbox. Review authored TeX before
+        # compiling it, just as for a directly authored lesson .tex file.
+        picture = content.strip()
+        uncommented = re.sub(r"(?<!\\)%[^\n]*", "", picture).strip()
+        if (
+            not uncommented.startswith(r"\begin{tikzpicture}")
+            or not uncommented.endswith(r"\end{tikzpicture}")
+            or uncommented.count(r"\begin{tikzpicture}") != 1
+            or uncommented.count(r"\end{tikzpicture}") != 1
+        ):
+            raise ValueError(
+                f"TikZ fence at line {line_number} must contain exactly one "
+                r"complete \begin{tikzpicture}...\end{tikzpicture}"
+            )
+        return "\n".join([
+            r"\begin{lrbox}{\StudyDiagramBox}", picture, r"\end{lrbox}",
+            r"\par\begin{center}",
+            r"\ifdim\wd\StudyDiagramBox>\linewidth",
+            r"\resizebox{\linewidth}{!}{\usebox{\StudyDiagramBox}}",
+            r"\else\usebox{\StudyDiagramBox}\fi",
+            r"\end{center}\par",
+        ])
+    # Standard LaTeX verbatim requires no extra package. A literal closing
+    # delimiter in source code is emitted outside verbatim and then resumed.
+    literal_end = r"\end{verbatim}"
+    replacement = (literal_end + "\n" + r"\noindent\texttt{"
+                   + escape_tex(literal_end) + "}\\par\n"
+                   + r"\begin{verbatim}")
+    content = content.replace(literal_end, replacement)
+    return "\n".join([r"\begingroup\small", r"\begin{verbatim}",
+                      content, r"\end{verbatim}", r"\endgroup"])
 
 
 def escape_tex(text: str) -> str:
@@ -118,6 +155,7 @@ def body_tex(markdown: str, kind: str, layout: str) -> str:
     list_kind: str | None = None
     in_exercises = False
     error_seen = False
+    pending_space: int | None = None
 
     def flush_paragraph() -> None:
         if paragraph:
@@ -130,11 +168,47 @@ def body_tex(markdown: str, kind: str, layout: str) -> str:
             out.append(r"\end{" + list_kind + "}")
             list_kind = None
 
+    def finish_question() -> None:
+        nonlocal pending_space
+        if pending_space is not None:
+            flush_paragraph()
+            close_list()
+            out.append(r"\QuestionSpace{" + str(pending_space) + "}")
+            pending_space = None
+
+    def start_question(label: str, prompt: str, colon: bool = False) -> None:
+        nonlocal pending_space
+        finish_question()
+        flush_paragraph()
+        close_list()
+        suffix = "Colon" if colon else ""
+        out.append(r"\CompactQuestion" + suffix + "{" + inline(label)
+                   + "}{" + inline(prompt) + "}")
+        if layout == "loose":
+            pending_space = question_space(label)
+
     i = 0
     while i < len(lines):
         line = lines[i].strip()
         if not line:
             flush_paragraph()
+            i += 1
+            continue
+        fence = FENCE.fullmatch(line)
+        if fence:
+            flush_paragraph()
+            close_list()
+            delimiter, language = fence.groups()
+            start_line = i + 1
+            code = []
+            i += 1
+            closing = re.compile(re.escape(delimiter[0]) + "{" + str(len(delimiter)) + r",}\s*$")
+            while i < len(lines) and not closing.fullmatch(lines[i].strip()):
+                code.append(lines[i])
+                i += 1
+            if i >= len(lines):
+                raise ValueError(f"Unclosed code fence at line {start_line}")
+            out.append(fenced_tex("\n".join(code), language.strip(), start_line))
             i += 1
             continue
         if line.startswith("|"):
@@ -161,6 +235,7 @@ def body_tex(markdown: str, kind: str, layout: str) -> str:
             continue
         heading = HEADING.match(line)
         if heading:
+            finish_question()
             flush_paragraph()
             close_list()
             level, title = len(heading.group(1)), heading.group(2)
@@ -194,26 +269,15 @@ def body_tex(markdown: str, kind: str, layout: str) -> str:
         if in_exercises and kind in ("day", "errors"):
             question = QUESTION.match(line)
             if question:
-                flush_paragraph()
-                close_list()
                 label, prompt = question.groups()
-                suffix = "Colon" if kind == "errors" else ""
-                if layout == "loose":
-                    out.append(r"\PracticeQuestion" + suffix + "{" + inline(label) + "}{" + inline(prompt) + "}{" + str(question_space(label)) + "}")
-                else:
-                    out.append(r"\CompactQuestion" + suffix + "{" + inline(label) + "}{" + inline(prompt) + "}")
+                start_question(label, prompt, colon=kind == "errors")
                 i += 1
                 continue
             plain_question = ORDERED.match(line)
             if plain_question:
-                flush_paragraph()
-                close_list()
                 label = line.split(".", 1)[0]
                 prompt = plain_question.group(1)
-                if layout == "loose":
-                    out.append(r"\PracticeQuestion{" + label + "}{" + inline(prompt) + "}{35}")
-                else:
-                    out.append(r"\CompactQuestion{" + label + "}{" + inline(prompt) + "}")
+                start_question(label, prompt)
                 i += 1
                 continue
         bullet = line.startswith("- ")
@@ -232,6 +296,7 @@ def body_tex(markdown: str, kind: str, layout: str) -> str:
         close_list()
         paragraph.append(line)
         i += 1
+    finish_question()
     flush_paragraph()
     close_list()
     return "\n".join(out)
@@ -339,7 +404,9 @@ def map_tex(info: dict, kind: str) -> str:
 
 PREAMBLE = r"""\documentclass[UTF8,a4paper,11pt]{ctexart}
 \usepackage[margin=22mm,headheight=14pt,footskip=12mm]{geometry}
-\usepackage{amsmath,amssymb,array,longtable,booktabs,tikz,needspace,enumitem,fancyhdr,hyperref}
+\usepackage{amsmath,amssymb,array,longtable,booktabs,tikz,graphicx,needspace,enumitem,fancyhdr,hyperref}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,fit}
+\newsavebox{\StudyDiagramBox}
 \usepackage{microtype}
 \hypersetup{colorlinks=false,pdfborder={0 0 0},pdfauthor={Good Learning},bookmarks=false}
 \newfontfamily\circledfont{Segoe UI Symbol}
@@ -353,9 +420,10 @@ PREAMBLE = r"""\documentclass[UTF8,a4paper,11pt]{ctexart}
 \ctexset{section={format=\Large\bfseries\sffamily,beforeskip=1.35em,afterskip=.65em},
 subsection={format=\large\bfseries\sffamily,beforeskip=1em,afterskip=.45em}}
 \newcommand{\chaptertitle}[1]{\Needspace{8\baselineskip}\noindent{\LARGE\bfseries\sffamily #1}\par\vspace{4mm}\hrule\vspace{6mm}}
-\newcommand{\CompactQuestion}[2]{\par\noindent\textbf{#1.}\ #2\par\vspace{.8em}}
+\newcommand{\CompactQuestion}[2]{\par\Needspace{5\baselineskip}\noindent\textbf{#1.}\ #2\par\vspace{.8em}}
 \newcommand{\PracticeQuestion}[3]{\par\Needspace{4\baselineskip}\noindent\begin{minipage}{\linewidth}\textbf{#1.}\ #2\par\noindent\rule{0pt}{#3mm}\par\end{minipage}\par}
-\newcommand{\CompactQuestionColon}[2]{\par\noindent\textbf{#1：}\ #2\par\vspace{.8em}}
+\newcommand{\CompactQuestionColon}[2]{\par\Needspace{5\baselineskip}\noindent\textbf{#1：}\ #2\par\vspace{.8em}}
+\newcommand{\QuestionSpace}[1]{\par\noindent\rule{0pt}{#1mm}\par}
 \newcommand{\PracticeQuestionColon}[3]{\par\Needspace{4\baselineskip}\noindent\begin{minipage}{\linewidth}\textbf{#1：}\ #2\par\noindent\rule{0pt}{#3mm}\par\end{minipage}\par}
 \pagestyle{fancy}\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}
 \begin{document}
@@ -368,7 +436,7 @@ def render(source: Path, output: Path, kind: str, layout: str, map_info: dict) -
     if kind == "day":
         cover["title"] += "（宽松排版型）" if layout == "loose" else "（紧凑排版型）"
     list_style = r"\setlist[enumerate]{label=\arabic*）}" if kind == "errors" else ""
-    cover_tex = "" if kind == "errors" else map_tex(cover, kind) + "\n"
+    cover_tex = "" if kind in ("errors", "diagram") else map_tex(cover, kind) + "\n"
     tex = PREAMBLE + cover_tex + list_style + "\n" + body_tex(markdown, kind, layout) + "\n\\end{document}\n"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(tex, encoding="utf-8")
@@ -378,12 +446,12 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("source", type=Path)
     parser.add_argument("output", type=Path)
-    parser.add_argument("--kind", choices=["knowledge", "plan", "day", "errors"], required=True)
+    parser.add_argument("--kind", choices=["knowledge", "plan", "day", "errors", "diagram"], required=True)
     parser.add_argument("--layout", choices=["compact", "loose"], default="compact")
     parser.add_argument("--map-config", type=Path)
     args = parser.parse_args()
     config = json.loads(args.map_config.read_text(encoding="utf-8")) if args.map_config else {}
-    if args.kind != "errors" and args.kind not in config:
+    if args.kind not in ("errors", "diagram") and args.kind not in config:
         parser.error("--map-config must contain the selected document kind")
     render(args.source, args.output, args.kind, args.layout, config.get(args.kind, {}))
 

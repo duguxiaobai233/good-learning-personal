@@ -1,0 +1,525 @@
+--- before/LOCAL_SETUP.md
++++ after/LOCAL_SETUP.md
+@@ -43,3 +43,7 @@
+ 运行时将示例输入、输出路径替换为自己的文件路径。课程 Markdown 转换为 LaTeX 可使用同一入口调用 `render_study_pdf.py`，具体参数见仓库 README 和 `references\latex-export.md`。
+ 
+ 若 PowerShell 的脚本策略阻止运行，可用 `powershell.exe -NoProfile -ExecutionPolicy Bypass -File` 调用该入口；这只影响当前进程，不修改系统策略。
++
++## 教学配图更新（2026-10-28）
++
++复用已安装的 TikZ/PGF，没有新增 Python 包或在线服务。课程转换器支持 `tikz` 围栏、普通代码围栏和无封面的 `--kind diagram`；常用 TikZ 库由现有 PGF 提供。示例位于 `examples/technical-diagrams.md`，按 `references/technical-diagrams.md` 生成并检查技术图。现有学习记录和两种课程 PDF 排版继续沿用。
+--- before/README.md
++++ after/README.md
+@@ -74,3 +74,9 @@
+ ## 许可证
+ 
+ [MIT](LICENSE)
++
++## 本机定制：教学配图
++
++2026-10-28 版本增加按内容主动生成专业图的规则，复用 TikZ/PGF 绘制控制框图、信号流图和数据结构状态图。参见 [教学配图规则](references/technical-diagrams.md) 和 [可编译示例](examples/technical-diagrams.md)。
++
++课程源稿中的 `tikz` 围栏将渲染为图，普通代码围栏保留为代码。独立图示文档可用 `render_study_pdf.py 输入.md 输出.tex --kind diagram`，随后用原有编译器生成 PDF；每日课程继续使用 compact/loose 两种排版。源图及公式需要语义核对，PDF 需要实际渲染检查。验证渲染器可运行 `python -m unittest discover -s tests -v`。
+--- before/SKILL.md
++++ after/SKILL.md
+@@ -47,6 +47,14 @@
+ 
+ 在计划确定后，根据已知水平推荐“零基础”或“复习”，让用户选择；若用户已明确选择，就直接使用。不要在用户明确说“开始今天的学习”之前整篇输出每日课程。用户若直接要求一节课，可将其视为开始该节。
+ 
++## 教学配图：结构、信号与状态
++
++本机用户要求学习内容主动用图辅助理解。准备讲解、例题、练习或订正时，检查是否需要表达连接关系、方向、空间组织、状态变化或曲线规律；这些关系对理解或解题必需时，实际生成并展示相应图，不等待用户另说“画图”。例如自动控制原理的系统结构图、方框图和信号流图，计算机课程的栈、队列、内存、树和执行时序图。按教学需要选择图型，不要求每段文字都配图，不用总结思维导图代替专业图。
++
++出现上述情形时阅读 [教学配图](references/technical-diagrams.md)，优先复用现有 TikZ/PGF 与 [可编译示例](examples/technical-diagrams.md)。课程 Markdown 的 `tikz` 围栏由转换脚本绘制为矢量图；图须放在相关讲解或题干附近，两个排版版本都要完整保留，答疑也要展示实际图或预览。讲清图中符号、读图方向及其与文字、公式或操作的对应关系；状态过程必要时分步画，推导或等效变换图说明每步改变的关系。题目条件图在题干中给全，解题路径和答案图放到解析中。
++
++交付前分别核对图的专业语义和实际渲染效果：控制图的箭头、加减号、支路增益、取样点应与方程一致；状态图的初始条件、索引、指针与每一步操作应一致；中文、公式、连线与边界应清楚。不能只交付绘图代码、占位文字或指回原材料。来源不清、连接不明时标注疑点，不擅自补成唯一正确图。这里的课程教学图可用 TikZ；下文独立总结思维导图仍沿用 SVG/PNG 规则。
++
+ ## 每日学习与反馈
+ 
+ 开始学习时阅读 [每日学习与调整](references/daily-study.md)。以下讲解与出题要求已按本机用户 2026-10-26 的明确反馈调整。默认学习者主要阅读本技能生成的内容：完整讲清本讲所需的原课件知识、必要前置、术语与符号、机制或过程、公式条件，以及图表和代码含义，再用完整例题演示应用。来源页码只用于核对，不能代替讲解；不能把课程缩成知识点清单或例题计算步骤。零基础从前置知识逐层建立理解；复习可压缩已确认掌握的部分。时间不足时缩小当次范围和题量，保留关键解释，不把必学内容推回原课件。缺少原材料时说明未核对范围，不编造课件内容或页码。
+--- before/examples/technical-diagrams.md
++++ after/examples/technical-diagrams.md
+@@ -0,0 +1,99 @@
++# 教学配图示例
++
++以下是新编的绘图验证材料，不计入学习进度。使用现成 TikZ/PGF 引擎；各图可按当前课程修改。
++
++## 1. 负反馈系统方框图
++
++假设各环节为线性时不变系统，使用零初始条件下的传递函数。$R(s)$ 是给定输入，$Y(s)$ 是输出；$G_c(s)$ 是控制器，$G_p(s)$ 是被控对象，$H(s)$ 是反馈环节。
++
++```tikz
++\begin{tikzpicture}[>=Stealth,thick,font=\small,
++ block/.style={draw,minimum width=18mm,minimum height=11mm},
++ sum/.style={draw,circle,minimum size=8mm,inner sep=0pt}]
++\node[sum] (sum) at (1.5,0) {};
++\node[block] (gc) at (4,0) {$G_c(s)$};
++\node[block] (gp) at (7,0) {$G_p(s)$};
++\coordinate (take) at (9.1,0);
++\node[block] (h) at (6,-2) {$H(s)$};
++\draw[->] (-.2,0) node[left] {$R(s)$} -- (sum.west);
++\node at (1.00,.35) {$+$};
++\node at (1.83,-.52) {$-$};
++\draw[->] (sum.east) -- node[above] {$E(s)$} (gc.west);
++\draw[->] (gc.east) -- node[above] {$U(s)$} (gp.west);
++\draw[->] (gp.east) -- (10.6,0) node[right] {$Y(s)$};
++\fill (take) circle (1.6pt);
++\draw[->] (take) |- (h.east);
++\draw[->] (h.west) -| node[pos=.25,above] {$B(s)$} (sum.south);
++\node[below=2mm of gc] {控制器};
++\node[below=2mm of gp] {被控对象};
++\node[below=2mm of h] {反馈环节};
++\end{tikzpicture}
++```
++
++图 1：圆圈是求和点，实心点是取样点。沿上方箭头读前向传递，再从输出取样点沿下方回路返回；返回信号从负号输入求和点。
++
++按图逐项写出关系：$B=HY$，$E=R-B$，$U=G_cE$，$Y=G_pU$。图中每一条关系均使用同一组信号符号，因此有
++
++$$
++Y=G_cG_p(R-HY),\qquad \frac{Y(s)}{R(s)}=\frac{G_c(s)G_p(s)}{1+G_c(s)G_p(s)H(s)}.
++$$
++
++负反馈的符号来自求和点。闭环传递函数表达式本身不能保证系统稳定；稳定性还需根据具体环节检查。
++
++## 2. 同一系统的信号流图
++
++信号流图用节点表示变量，用有向支路表示乘以某个增益。进入同一节点的各支路贡献相加。因此，方框图求和点的负号在这里写进反馈支路增益。
++
++```tikz
++\begin{tikzpicture}[>=Stealth,thick,font=\small,
++ signal/.style={circle,fill=black,inner sep=0pt,minimum size=4pt}]
++\node[signal,label=above:$R(s)$] (r) at (0,0) {};
++\node[signal,label=above:$E(s)$] (e) at (3,0) {};
++\node[signal,label=above:$U(s)$] (u) at (6,0) {};
++\node[signal,label=above:$Y(s)$] (y) at (9,0) {};
++\draw[->] (r) -- node[below] {$1$} (e);
++\draw[->] (e) -- node[below] {$G_c(s)$} (u);
++\draw[->] (u) -- node[below] {$G_p(s)$} (y);
++\draw[->] (y) to[out=-100,in=-80,looseness=1.1]
++ node[pos=.5,below] {$-H(s)$} (e);
++\end{tikzpicture}
++```
++
++图 2：从 $Y$ 返回 $E$ 的支路增益为 $-H$。两个进入 $E$ 的贡献是 $R$ 和 $-HY$，所以仍有 $E=R-HY$，与图 1 一致。
++
++这张图只有一条前向通路，增益为 $P=G_cG_p$；只有一个回路，回路增益为 $L=-G_cG_pH$。因此闭环结果是 $P/(1-L)=G_cG_p/(1+G_cG_pH)$。这也提供了两种画法是否表达同一个系统的核对方法。
++
++## 3. 栈的入栈与出栈状态
++
++本例采用容量为 4 的顺序栈，索引从下往上增加；$top$ 指向当前栈顶元素，空栈时 $top=-1$。方格中的“空”表示不属于栈的有效区域，不要求底层存储单元已经清零。
++
++```tikz
++\begin{tikzpicture}[>=Stealth,thick,font=\small]
++\foreach \shift/\title in {0/初始状态,4.2/入栈后,8.4/出栈后} {
++  \begin{scope}[xshift=\shift cm]
++  \node[font=\bfseries] at (.65,3.35) {\title};
++  \foreach \i in {0,1,2,3} {
++    \draw (0,.65*\i) rectangle (1.3,.65*\i+.65);
++    \node[left] at (-.1,.65*\i+.325) {\i};
++  }
++  \node at (.65,.325) {10};
++  \node at (.65,.975) {20};
++  \node at (.65,2.275) {空};
++  \node[below] at (.65,-.1) {栈底};
++  \end{scope}
++}
++\node at (.65,1.625) {空};
++\node at (4.85,1.625) {30};
++\node at (9.05,1.625) {空};
++\draw[->] (2.1,.975) node[right] {$top=1$} -- (1.3,.975);
++\draw[->] (6.3,1.625) node[right] {$top=2$} -- (5.5,1.625);
++\draw[->] (10.5,.975) node[right] {$top=1$} -- (9.7,.975);
++\draw[->] (1.6,2.9) -- node[above] {push(30)} (4,2.9);
++\draw[->] (5.8,2.9) -- node[above] {pop()} (8.2,2.9);
++\node at (9.05,-.85) {返回值：30};
++\end{tikzpicture}
++```
++
++图 3：初始有效内容自栈底到栈顶为 $[10,20]$。push(30) 使 $top$ 从 1 变为 2，并在索引 2 写入 30；pop() 先取出索引 2 的 30 作为返回值，再使 $top$ 回到 1。最终有效内容恢复为 $[10,20]$。
++
++此处三幅图使用同一方向、容量和索引，读者可以直接比较变化。若另一份教材用 $top$ 指向下一空位，就必须同时更改指针标注和操作解释，不能混用两种定义。
+--- before/references/daily-study.md
++++ after/references/daily-study.md
+@@ -13,6 +13,10 @@
+ 原材料中的图、表、代码、状态变化和被简写的步骤，凡理解本讲或完成练习所必需，均应在生成内容中重绘、转述或展开说明。涉及程序与硬件时，要讲清相关状态、控制条件和执行先后；涉及公式时，要解释符号、单位、关系来源和适用范围。首次出现的必需概念在此处说明，不能用页码、缩写、术语堆叠或“课件已讲”代替。不能只把例题算式拆成若干步、每步加一句理由，就视为已经讲清原课件知识体系。
+ 
+ 完整例题放在相关知识讲解之后，用来展示如何识别问题、选用知识、推理、计算和检验结果，包含必要理由和边界检查；例题允许充分解释。原材料未取得或图文无法辨认时，明确未核对的范围；可据已确认材料和可靠来源解释，但不能把补充讲解冒充原课件原文，不能臆造页码。
++
++## 结构与过程需要实际配图
++
++讲解、例题或练习涉及连接关系、信号传递、空间组织、状态变化或曲线规律，并且图对理解或解题有实质作用时，按 [教学配图](technical-diagrams.md) 主动生成实际图。自动控制的框图/信号流图、栈和队列的逐步状态等不能只转述为文字或指回原课件。说明图中符号和阅读顺序，核对图与方程/操作一致；必要条件图随题给出，答案路径图放在解析中。两个 PDF 版本保留同样的图，独立题的作答空白放在完整题干和附图之后。
+ 
+ ## 题干完整，方法由学习者选择
+ 
+--- before/references/latex-export.md
++++ after/references/latex-export.md
+@@ -16,3 +16,9 @@
+ 错题本用 --kind errors 渲染，不需要导图 JSON；不制作思维导图、独立封面或其他非正题内容，首页直接进入第一条错题。每条错题采用“错题 N”二级标题，第二条起另起一页；复做题置于“再做一题”三级标题下，答案集中放在后部的二级标题。复做记录用 LaTeX 数学模式的 `$\square$` 表示可手写勾选的空方框，每个日期提供独立做对、订正后做对、未做对等选项；不要预勾选模拟记录。若需要打印作答区，使用 --layout loose。正文排版采用黑白、宽页边距、较舒展的行距和段距；表格优先不用竖线，留足行高。核心例题和错题记录都不要在同页堆叠，题干与步骤保持在一起，避免标题落在页尾。紧凑版也保留阅读所需空白；两个版本只在独立题的作答区有差异。编译器源文件应能在本机重新编译成同一内容的 PDF。
+ 
+ 编译脚本实际调用 XeLaTeX 两遍，用临时 ASCII 文件名避开 Windows 上中文日志文件名写入失败；若要使用 LuaLaTeX，可传 --compiler lualatex。源文件应为自包含的 LaTeX 文档。检查日志中的缺字与越界警告，渲染 PDF 的每一页检查中文、公式、导图、表格和作答空白。紧凑版和宽松版必须出自同一份课程文本，核对题目及答案完整一致。
++
++## 课程内的技术图
++
++涉及控制框图、信号流图或数据结构状态等教学内容时，按 [教学配图](technical-diagrams.md) 生成实际图。转换脚本已支持 `tikz` 代码围栏：围栏内容是一个完整的 `\begin{tikzpicture}...\end{tikzpicture}`，输出原位矢量图；普通代码围栏仍作为代码排版。预加载 `arrows.meta, positioning, calc, shapes.geometric, fit`。图不能依赖临时编译目录之外的文件。示例见 [配图示例](../examples/technical-diagrams.md)。
++
++日常课程仍使用 `--kind day --layout compact/loose`。独立的教学图说明或安装验证可用 `--kind diagram`，无需 `--map-config`，不生成导图封面。图仅在超出行宽时缩小；过密或过高的图需要重排或拆图，不以过小字体勉强放下。图题置于紧邻图的正文，练习题的空白在题干、图和补充条件之后。Markdown 查看器不一定绘制 TikZ，交付须提供实际编译的 PDF 或渲染后的 PNG。
+--- before/references/technical-diagrams.md
++++ after/references/technical-diagrams.md
+@@ -0,0 +1,54 @@
++# 教学技术图
++
++本细则用于解释对象结构、连接关系和状态变化的专业图，不替代知识清单或课后总结的思维导图。按当前讲解内容决定是否配图，不要求每个知识点都画图，也不把绘图测试写入真实学习记录。
++
++## 何时主动配图
++
++当理解依赖“谁连接谁、信号往哪里走、对象处于哪里、操作前后发生什么变化”时，主动生成相应图，而不是等用户额外要求。原材料中的图若是理解概念或完成题目的必要条件，应保留清晰原图或忠实重绘；不能只引用页码。原图模糊、连线或符号无法辨认时，明确标出疑点，不凭空补全。仅为装饰或重复文字的图可以省略。
++
++| 学习内容 | 优先图式 | 图中应表达的核心信息 |
++|---|---|---|
++| 自动控制系统、传递关系 | 系统结构图或方框图 | 信号方向、环节、求和符号、分支与反馈 |
++| 信号流与梅森公式 | 信号流图 | 节点变量、有向支路及增益、回路与路径 |
++| 栈、队列、链表、递归调用 | 状态快照、内存示意、调用栈 | 元素次序、指针含义、操作前后变化 |
++| 算法执行、协议或事件顺序 | 流程图、时序图、状态转换图 | 条件、执行顺序、状态转移 |
++| 力学、电路、几何关系 | 受力图、电路图、几何示意 | 方向、连接、参考系、已知量与约束 |
++| 响应曲线、频域特性、实验数据 | 有坐标轴和单位的科学曲线 | 数据或函数、参数、范围与关键特征 |
++
++图式随学科和任务变化；“堆栈”若可能指栈数据结构、调用栈或堆与栈内存，应结合上下文明确含义。不能用流程图替代需要准确空间位置的内存图，也不能把结构示意线当作实际计算的响应曲线。
++
++## 先核对含义，再调整布局
++
++画图前先列出对象、变量、连接和约束，并与正文使用同一套符号。来源图的重绘、根据给定关系生成的图和新编示意图应区分；来源页码用于核对，不代替解释。
++
++- **控制框图：**框内是环节或传递函数，连线上是信号。求和点每条输入的正负号都要明确；取样点以实心点表示，交叉但不相连的线不能误画成取样点。逐段核对箭头、输入输出、反馈接入位置，以及扰动位于哪个环节前后。以节点关系检查闭环：例如负反馈应能读出 $e=r-Hy$、$y=Ge$；图与推导不一致时先修正，不能为匹配结论改符号。
++- **信号流图：**节点表示信号变量，支路标签表示有符号增益；每个节点的方程应等于所有入支路贡献之和。核对平行支路、自环、反馈方向及负号；反馈支路上的 $-H$ 不能再次在节点处重复扣除。讲梅森公式时按有向图检查前向通路、回路和不接触回路；“不接触”指不共用节点，不由图上线条是否相交判断。
++- **栈与其他状态图：**先约定栈顶位置、索引方向以及指针指向当前元素还是下一空位。每次 push/pop 后核对元素次序、栈顶位置、返回值和空满状态。将值、地址、索引、指针画成不同角色。若画调用栈，还应明确函数帧、局部变量和返回位置；不能把一般栈示意冒充某种机器的精确内存布局。
++
++## 图要进入讲解和题目
++
++图前说明它帮助回答的问题；图后解释符号、阅读顺序、关键关系，并将图上的一步与方程、程序或实际操作对应。讲等效变换、反馈化简或数据结构操作时，根据难点提供“变换前—关键步骤—变换后”的若干快照，保持节点名称与相对位置尽量稳定，并说明本步改变了什么、为何合法。无需把每条计算都画成一张图。
++
++独立练习必须附上解题所需的完整原始图和图例。题干图应给出必要条件，但不额外高亮正确路径、标出待求的等效增益、显示尚待计算的出栈结果，或预画关键化简步骤。讲解图和答案图可以展示这些内容；放在后部解析中，与练习题干分开。
++
++## 复用已有工具并实际生成
++
++现有课程 PDF 主线使用 **TikZ/PGF 与 XeLaTeX**：数学公式沿用正文 LaTeX，优先黑白清晰、可编辑的矢量图。参照[可运行示例](../examples/technical-diagrams.md)，在 Markdown 中使用 `tikz` 围栏，内容必须包含一个完整的 `\begin{tikzpicture}...\end{tikzpicture}`。渲染器已加载 `arrows.meta,positioning,calc,shapes.geometric,fit`；普通代码围栏仍按代码打印，不能靠更换围栏标签把任意代码变成图。
++
++图块在正文原位排版、不浮动，仅在超出行宽时缩小。为保持字号可读，复杂图先拆成分图或减少无关标注，不把整张图无限缩小。图源应自包含：当前编译器只把生成的 TeX 复制到临时目录，不依赖外部图片、额外 `\input` 文件或 shell escape。一般节点与连线使用显式坐标或 positioning；不要在 XeLaTeX 路径使用需要 Lua 的 `graphdrawing` 自动布局库。
++
++答疑中的单图可由 `render_study_pdf.py 输入.md 输出.tex --kind diagram` 生成无封面 TeX，再调用现有编译入口得到 PDF，渲染为 PNG 用于查看与展示。完整课程仍分别生成 day 的紧凑版与宽松版，并把图嵌入对应正文。保留 Markdown/TikZ 图源和必要预览，按原有目录规则保存。
++
++**只有图代码不算完成交付。**答疑应直接展示实际图或 PNG；课程交付要确认图实际出现在两版 PDF 中，不能让用户自行运行代码才能看到图。
++
++按任务需要可选用现成工具，但先检查本机可用性，不宣称已安装：Schemdraw 适合电路和信号处理元件图；Graphviz 适合树、链表和复杂拓扑；Mermaid 适合聊天中的简单流程。引入外部图时必须先解决当前自包含编译方式的集成限制，不能把一个文件路径写入 TeX 就宣称可重编译。科学曲线使用实际计算结果及标准绘图工具。技术图的连接、符号与数据需精确，不用生成式图片替代。
++
++## 交付前检查
++
++实际编译并渲染所有含图页面，目视检查箭头、正负号、下标、中文、标签重叠、连接误读和页边裁切；在最终页面大小下检查字号。再按上面的学科关系核对图与文字、公式或程序是否一致。两版课程都要查看，编译成功并不代表图正确。若绘图或渲染失败，修复后重新检查；仍失败时说明具体未完成项，保留图源，不以未渲染代码冒充图。
++
++## 复用来源
++
++- [PGF/TikZ 项目与正式文档](https://ctan.org/pkg/pgf)、[节点与连线手册](https://tikz.dev/tikz-shapes)、[graphdrawing 的 Lua 要求](https://tikz.dev/gd-overview)。
++- [Schemdraw 信号处理示例](https://schemdraw.readthedocs.io/en/stable/gallery/signalproc.html)、[安装与导出](https://schemdraw.readthedocs.io/en/stable/usage/start.html)、[后端和数学支持](https://schemdraw.readthedocs.io/en/stable/usage/backends.html)。SVG 的完整公式支持有额外依赖，不能假定基础安装即具备。
++- [Graphviz 节点与表格标签](https://graphviz.org/doc/info/shapes.html)、[Mermaid 数学支持范围](https://mermaid.js.org/config/math.html)。不要假定 Mermaid 所有图式都支持公式。
+--- before/scripts/render_study_pdf.py
++++ after/scripts/render_study_pdf.py
+@@ -16,6 +16,43 @@
+ QUESTION = re.compile(r"^\*\*((?:[A-Z]\d+|题\s*\d+|练习\s*\d+|\d+))[.．:：]\*\*\s*(.*)$")
+ HEADING = re.compile(r"^(#{1,3})\s+(.*)$")
+ ORDERED = re.compile(r"^\d+\.\s+(.*)$")
++FENCE = re.compile(r"^(`{3,}|~{3,})([^`~]*)$")
++
++
++def fenced_tex(content: str, language: str, line_number: int) -> str:
++    """Render authored TikZ as a picture; preserve all other code literally."""
++    if language.lower() == "tikz":
++        # This is a format check, not a TeX sandbox. Review authored TeX before
++        # compiling it, just as for a directly authored lesson .tex file.
++        picture = content.strip()
++        uncommented = re.sub(r"(?<!\\)%[^\n]*", "", picture).strip()
++        if (
++            not uncommented.startswith(r"\begin{tikzpicture}")
++            or not uncommented.endswith(r"\end{tikzpicture}")
++            or uncommented.count(r"\begin{tikzpicture}") != 1
++            or uncommented.count(r"\end{tikzpicture}") != 1
++        ):
++            raise ValueError(
++                f"TikZ fence at line {line_number} must contain exactly one "
++                r"complete \begin{tikzpicture}...\end{tikzpicture}"
++            )
++        return "\n".join([
++            r"\begin{lrbox}{\StudyDiagramBox}", picture, r"\end{lrbox}",
++            r"\par\begin{center}",
++            r"\ifdim\wd\StudyDiagramBox>\linewidth",
++            r"\resizebox{\linewidth}{!}{\usebox{\StudyDiagramBox}}",
++            r"\else\usebox{\StudyDiagramBox}\fi",
++            r"\end{center}\par",
++        ])
++    # Standard LaTeX verbatim requires no extra package. A literal closing
++    # delimiter in source code is emitted outside verbatim and then resumed.
++    literal_end = r"\end{verbatim}"
++    replacement = (literal_end + "\n" + r"\noindent\texttt{"
++                   + escape_tex(literal_end) + "}\\par\n"
++                   + r"\begin{verbatim}")
++    content = content.replace(literal_end, replacement)
++    return "\n".join([r"\begingroup\small", r"\begin{verbatim}",
++                      content, r"\end{verbatim}", r"\endgroup"])
+ 
+ 
+ def escape_tex(text: str) -> str:
+@@ -118,6 +155,7 @@
+     list_kind: str | None = None
+     in_exercises = False
+     error_seen = False
++    pending_space: int | None = None
+ 
+     def flush_paragraph() -> None:
+         if paragraph:
+@@ -130,11 +168,47 @@
+             out.append(r"\end{" + list_kind + "}")
+             list_kind = None
+ 
++    def finish_question() -> None:
++        nonlocal pending_space
++        if pending_space is not None:
++            flush_paragraph()
++            close_list()
++            out.append(r"\QuestionSpace{" + str(pending_space) + "}")
++            pending_space = None
++
++    def start_question(label: str, prompt: str, colon: bool = False) -> None:
++        nonlocal pending_space
++        finish_question()
++        flush_paragraph()
++        close_list()
++        suffix = "Colon" if colon else ""
++        out.append(r"\CompactQuestion" + suffix + "{" + inline(label)
++                   + "}{" + inline(prompt) + "}")
++        if layout == "loose":
++            pending_space = question_space(label)
++
+     i = 0
+     while i < len(lines):
+         line = lines[i].strip()
+         if not line:
+             flush_paragraph()
++            i += 1
++            continue
++        fence = FENCE.fullmatch(line)
++        if fence:
++            flush_paragraph()
++            close_list()
++            delimiter, language = fence.groups()
++            start_line = i + 1
++            code = []
++            i += 1
++            closing = re.compile(re.escape(delimiter[0]) + "{" + str(len(delimiter)) + r",}\s*$")
++            while i < len(lines) and not closing.fullmatch(lines[i].strip()):
++                code.append(lines[i])
++                i += 1
++            if i >= len(lines):
++                raise ValueError(f"Unclosed code fence at line {start_line}")
++            out.append(fenced_tex("\n".join(code), language.strip(), start_line))
+             i += 1
+             continue
+         if line.startswith("|"):
+@@ -161,6 +235,7 @@
+             continue
+         heading = HEADING.match(line)
+         if heading:
++            finish_question()
+             flush_paragraph()
+             close_list()
+             level, title = len(heading.group(1)), heading.group(2)
+@@ -194,26 +269,15 @@
+         if in_exercises and kind in ("day", "errors"):
+             question = QUESTION.match(line)
+             if question:
+-                flush_paragraph()
+-                close_list()
+                 label, prompt = question.groups()
+-                suffix = "Colon" if kind == "errors" else ""
+-                if layout == "loose":
+-                    out.append(r"\PracticeQuestion" + suffix + "{" + inline(label) + "}{" + inline(prompt) + "}{" + str(question_space(label)) + "}")
+-                else:
+-                    out.append(r"\CompactQuestion" + suffix + "{" + inline(label) + "}{" + inline(prompt) + "}")
++                start_question(label, prompt, colon=kind == "errors")
+                 i += 1
+                 continue
+             plain_question = ORDERED.match(line)
+             if plain_question:
+-                flush_paragraph()
+-                close_list()
+                 label = line.split(".", 1)[0]
+                 prompt = plain_question.group(1)
+-                if layout == "loose":
+-                    out.append(r"\PracticeQuestion{" + label + "}{" + inline(prompt) + "}{35}")
+-                else:
+-                    out.append(r"\CompactQuestion{" + label + "}{" + inline(prompt) + "}")
++                start_question(label, prompt)
+                 i += 1
+                 continue
+         bullet = line.startswith("- ")
+@@ -232,6 +296,7 @@
+         close_list()
+         paragraph.append(line)
+         i += 1
++    finish_question()
+     flush_paragraph()
+     close_list()
+     return "\n".join(out)
+@@ -339,7 +404,9 @@
+ 
+ PREAMBLE = r"""\documentclass[UTF8,a4paper,11pt]{ctexart}
+ \usepackage[margin=22mm,headheight=14pt,footskip=12mm]{geometry}
+-\usepackage{amsmath,amssymb,array,longtable,booktabs,tikz,needspace,enumitem,fancyhdr,hyperref}
++\usepackage{amsmath,amssymb,array,longtable,booktabs,tikz,graphicx,needspace,enumitem,fancyhdr,hyperref}
++\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,fit}
++\newsavebox{\StudyDiagramBox}
+ \usepackage{microtype}
+ \hypersetup{colorlinks=false,pdfborder={0 0 0},pdfauthor={Good Learning},bookmarks=false}
+ \newfontfamily\circledfont{Segoe UI Symbol}
+@@ -353,9 +420,10 @@
+ \ctexset{section={format=\Large\bfseries\sffamily,beforeskip=1.35em,afterskip=.65em},
+ subsection={format=\large\bfseries\sffamily,beforeskip=1em,afterskip=.45em}}
+ \newcommand{\chaptertitle}[1]{\Needspace{8\baselineskip}\noindent{\LARGE\bfseries\sffamily #1}\par\vspace{4mm}\hrule\vspace{6mm}}
+-\newcommand{\CompactQuestion}[2]{\par\noindent\textbf{#1.}\ #2\par\vspace{.8em}}
++\newcommand{\CompactQuestion}[2]{\par\Needspace{5\baselineskip}\noindent\textbf{#1.}\ #2\par\vspace{.8em}}
+ \newcommand{\PracticeQuestion}[3]{\par\Needspace{4\baselineskip}\noindent\begin{minipage}{\linewidth}\textbf{#1.}\ #2\par\noindent\rule{0pt}{#3mm}\par\end{minipage}\par}
+-\newcommand{\CompactQuestionColon}[2]{\par\noindent\textbf{#1：}\ #2\par\vspace{.8em}}
++\newcommand{\CompactQuestionColon}[2]{\par\Needspace{5\baselineskip}\noindent\textbf{#1：}\ #2\par\vspace{.8em}}
++\newcommand{\QuestionSpace}[1]{\par\noindent\rule{0pt}{#1mm}\par}
+ \newcommand{\PracticeQuestionColon}[3]{\par\Needspace{4\baselineskip}\noindent\begin{minipage}{\linewidth}\textbf{#1：}\ #2\par\noindent\rule{0pt}{#3mm}\par\end{minipage}\par}
+ \pagestyle{fancy}\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}
+ \begin{document}
+@@ -368,7 +436,7 @@
+     if kind == "day":
+         cover["title"] += "（宽松排版型）" if layout == "loose" else "（紧凑排版型）"
+     list_style = r"\setlist[enumerate]{label=\arabic*）}" if kind == "errors" else ""
+-    cover_tex = "" if kind == "errors" else map_tex(cover, kind) + "\n"
++    cover_tex = "" if kind in ("errors", "diagram") else map_tex(cover, kind) + "\n"
+     tex = PREAMBLE + cover_tex + list_style + "\n" + body_tex(markdown, kind, layout) + "\n\\end{document}\n"
+     output.parent.mkdir(parents=True, exist_ok=True)
+     output.write_text(tex, encoding="utf-8")
+@@ -378,12 +446,12 @@
+     parser = argparse.ArgumentParser()
+     parser.add_argument("source", type=Path)
+     parser.add_argument("output", type=Path)
+-    parser.add_argument("--kind", choices=["knowledge", "plan", "day", "errors"], required=True)
++    parser.add_argument("--kind", choices=["knowledge", "plan", "day", "errors", "diagram"], required=True)
+     parser.add_argument("--layout", choices=["compact", "loose"], default="compact")
+     parser.add_argument("--map-config", type=Path)
+     args = parser.parse_args()
+     config = json.loads(args.map_config.read_text(encoding="utf-8")) if args.map_config else {}
+-    if args.kind != "errors" and args.kind not in config:
++    if args.kind not in ("errors", "diagram") and args.kind not in config:
+         parser.error("--map-config must contain the selected document kind")
+     render(args.source, args.output, args.kind, args.layout, config.get(args.kind, {}))
+ 
+--- before/tests/test_technical_diagrams.py
++++ after/tests/test_technical_diagrams.py
+@@ -0,0 +1,104 @@
++"""Regression checks for diagram-bearing lessons; no TeX install required."""
++
++import importlib.util
++from pathlib import Path
++import tempfile
++import unittest
++
++
++SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "render_study_pdf.py"
++SPEC = importlib.util.spec_from_file_location("render_study_pdf", SCRIPT)
++renderer = importlib.util.module_from_spec(SPEC)
++SPEC.loader.exec_module(renderer)
++
++PICTURE = r"""\begin{tikzpicture}
++\node[draw] (g) {$\frac{1}{s+1}$};
++\draw[-{Stealth}] (-2,0) -- (g.west);
++\end{tikzpicture}"""
++FENCED = "```tikz\n" + PICTURE + "\n```"
++
++
++class TechnicalDiagramTests(unittest.TestCase):
++    def test_existing_text_math_and_table(self):
++        result = renderer.body_tex(
++            "# 标题\n\n文字 **重点** 和 $G(s)$。\n\n"
++            "| 变量 | 含义 |\n| --- | --- |\n| $r$ | 输入 |\n\n"
++            "- 一个要点\n", "errors", "compact")
++        self.assertIn(r"\chaptertitle{标题}", result)
++        self.assertIn(r"文字 \textbf{重点} 和 $G(s)$。", result)
++        self.assertIn(r"$r$ & 输入", result)
++        self.assertIn(r"\item 一个要点", result)
++
++    def test_tikz_is_vector_source_at_its_text_position(self):
++        result = renderer.body_tex("图前\n\n" + FENCED + "\n\n图后", "diagram", "compact")
++        self.assertIn(PICTURE, result)
++        self.assertNotIn(r"\begin{verbatim}", result)
++        self.assertNotIn(r"\begin{figure}", result)
++        self.assertLess(result.index("图前"), result.index(PICTURE))
++        self.assertLess(result.index(PICTURE), result.index("图后"))
++
++    def test_code_contents_not_parsed_as_markdown(self):
++        code = '# not a heading\n    $variable = 2\n|a|b|\n**A1.** literal'
++        result = renderer.body_tex("```python\n" + code + "\n```", "day", "loose")
++        self.assertIn("\\begin{verbatim}\n" + code + "\n\\end{verbatim}", result)
++        self.assertNotIn(r"\chaptertitle", result)
++        self.assertNotIn(r"\QuestionSpace", result)
++
++    def test_long_and_tilde_fences(self):
++        source = "~~~~text\n```\n~~~~~\n\n````tikz\n" + PICTURE + "\n`````"
++        result = renderer.body_tex(source, "diagram", "compact")
++        self.assertIn("\\begin{verbatim}\n```\n\\end{verbatim}", result)
++        self.assertIn(PICTURE, result)
++
++    def test_loose_question_space_follows_all_conditions_and_figure(self):
++        source = ("## 独立练习\n\n**A1.** 求输出。\n\n" + FENCED
++                  + "\n\n补充条件：零初始状态。\n\n"
++                  "**A2.** 判断稳定性。\n\n## 答案\n\n答案文本。")
++        result = renderer.body_tex(source, "day", "loose")
++        positions = [result.index(fragment) for fragment in (
++            r"\CompactQuestion{A1}", PICTURE, "补充条件", r"\QuestionSpace{23}",
++            r"\CompactQuestion{A2}", r"\QuestionSpace{26}", r"\section{答案}",
++        )]
++        self.assertEqual(positions, sorted(positions))
++        self.assertEqual(result.count(r"\QuestionSpace{"), 2)
++
++    def test_compact_questions_keep_figures_without_answer_spaces(self):
++        source = "## 独立练习\n\n**A1.** 看图作答。\n\n" + FENCED
++        result = renderer.body_tex(source, "day", "compact")
++        self.assertIn(PICTURE, result)
++        self.assertNotIn(r"\QuestionSpace", result)
++
++    def test_last_question_is_closed_at_end_of_file(self):
++        result = renderer.body_tex(
++            "## 错题 1\n\n### 再做一题\n\n**R1.** 作答。\n\n最后条件。",
++            "errors", "loose")
++        self.assertIn(r"\CompactQuestionColon{R1}", result)
++        self.assertTrue(result.endswith(r"\QuestionSpace{42}"))
++        self.assertLess(result.index("最后条件"), result.index(r"\QuestionSpace"))
++
++    def test_unclosed_fence_reports_location(self):
++        with self.assertRaisesRegex(ValueError, "Unclosed code fence at line 3"):
++            renderer.body_tex("# 标题\n\n```tikz\n" + PICTURE, "diagram", "compact")
++
++    def test_malformed_picture_is_not_silently_typeset_as_code(self):
++        for content in ("", r"\draw (0,0) -- (1,0);", PICTURE + "\n" + PICTURE,
++                        PICTURE.replace(r"\end{tikzpicture}", "")):
++            with self.subTest(content=content):
++                with self.assertRaisesRegex(ValueError, "TikZ fence at line 1"):
++                    renderer.body_tex("```tikz\n" + content + "\n```", "diagram", "compact")
++
++    def test_diagram_document_does_not_require_cover_config(self):
++        with tempfile.TemporaryDirectory() as directory:
++            source = Path(directory) / "lesson.md"
++            output = Path(directory) / "lesson.tex"
++            source.write_text("# 技术图\n\n" + FENCED, encoding="utf-8")
++            renderer.render(source, output, "diagram", "compact", {})
++            tex = output.read_text(encoding="utf-8")
++            self.assertIn(PICTURE, tex)
++            self.assertIn(r"\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,fit}", tex)
++            self.assertNotIn("学习导图", tex)
++            self.assertTrue(tex.endswith("\\end{document}\n"))
++
++
++if __name__ == "__main__":
++    unittest.main()

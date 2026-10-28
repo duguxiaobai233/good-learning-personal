@@ -43,3 +43,7 @@ $runner = 'C:\Users\sora\.codex\skills\good-learning\scripts\run-local.ps1'
 运行时将示例输入、输出路径替换为自己的文件路径。课程 Markdown 转换为 LaTeX 可使用同一入口调用 `render_study_pdf.py`，具体参数见仓库 README 和 `references\latex-export.md`。
 
 若 PowerShell 的脚本策略阻止运行，可用 `powershell.exe -NoProfile -ExecutionPolicy Bypass -File` 调用该入口；这只影响当前进程，不修改系统策略。
+
+## 教学配图更新（2026-10-28）
+
+复用已安装的 TikZ/PGF，没有新增 Python 包或在线服务。课程转换器支持 `tikz` 围栏、普通代码围栏和无封面的 `--kind diagram`；常用 TikZ 库由现有 PGF 提供。示例位于 `examples/technical-diagrams.md`，按 `references/technical-diagrams.md` 生成并检查技术图。现有学习记录和两种课程 PDF 排版继续沿用。

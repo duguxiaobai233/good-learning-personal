@@ -1,0 +1,72 @@
+{
+  "version": "good-learning/local-diagrams-20261028",
+  "date": "2026-10-28",
+  "changes": [
+    {
+      "path": "LOCAL_SETUP.md",
+      "before_sha256": "9bb4aa4acdd992ff3e405f56718a3cd86e58c559492e33e4e52b7d092b1a66a1",
+      "after_sha256": "3c962c285a3f5e280f87b5473ec4582da30dc141df63b92463c636c575ab0129"
+    },
+    {
+      "path": "README.md",
+      "before_sha256": "64622375eecf7170891c40808a39eea74afd212cf772177e7845ed17ed9b0105",
+      "after_sha256": "169a1e92fa79c60550bbc69e592e47d0444a414a4701e347c585fecae489fd62"
+    },
+    {
+      "path": "SKILL.md",
+      "before_sha256": "a319771282150a58ff36b722fd8e28d32511b2b7a33798324661e417a9dc4ae0",
+      "after_sha256": "9633c7f432b2f7fa56560e04ea109438055c318897cf03ddd496380d15d9f12e"
+    },
+    {
+      "path": "examples/technical-diagrams.md",
+      "before_sha256": null,
+      "after_sha256": "a17b28a6eb871c23704286dba04251227fd9991df5359e64e2b76f0d5211ba20"
+    },
+    {
+      "path": "references/daily-study.md",
+      "before_sha256": "edf016beaabad96e79ee6abf15733a43c04d0edb23741140d08fdca681c0db99",
+      "after_sha256": "b5818e72e6df88507b8a921568ea0edc46a656ccf1a9893904ba33521e72e0a2"
+    },
+    {
+      "path": "references/latex-export.md",
+      "before_sha256": "d3f45b75535ad60071df5366b7ba872eb3781cee16bb2316d552e23d4d800e84",
+      "after_sha256": "bc30075d932b670f7405c72caaf48d2474db36ab1dba38ece7c1113a92ec8f7e"
+    },
+    {
+      "path": "references/technical-diagrams.md",
+      "before_sha256": null,
+      "after_sha256": "4c6ddd1ab47aec5260dfd7b80284a9a12db534a9a0dd0303ca476e5115fa8865"
+    },
+    {
+      "path": "scripts/render_study_pdf.py",
+      "before_sha256": "a36590a119eabaa16167e4740065cb058ec9926e4d8d77fbfe707d3a0dd5afe5",
+      "after_sha256": "9d75b8592f639a7b797ca4cd64fd123a16ceb6c45b5f9502c31a3a40a69d67c5"
+    },
+    {
+      "path": "tests/test_technical_diagrams.py",
+      "before_sha256": null,
+      "after_sha256": "f310d49373b6b569077f80ef323de3ce96c4517491096de825e0917f2c900100"
+    }
+  ],
+  "files": {
+    ".gitignore": "fece0f8d69025a82fc059aa5c04b425d0302a38d4415676e2781192b5669225a",
+    "LICENSE": "ab76adc704d07a340163e889281a3946b368e02b4040d3ae83cd2766af555b92",
+    "LOCAL_SETUP.md": "3c962c285a3f5e280f87b5473ec4582da30dc141df63b92463c636c575ab0129",
+    "README.md": "169a1e92fa79c60550bbc69e592e47d0444a414a4701e347c585fecae489fd62",
+    "SKILL.md": "9633c7f432b2f7fa56560e04ea109438055c318897cf03ddd496380d15d9f12e",
+    "examples/summary-map.json": "c13c3640396a183b33e8c13afcdd6b2d22ba12edaca68de22c13b7acbcd29b89",
+    "examples/technical-diagrams.md": "a17b28a6eb871c23704286dba04251227fd9991df5359e64e2b76f0d5211ba20",
+    "references/daily-study.md": "b5818e72e6df88507b8a921568ea0edc46a656ccf1a9893904ba33521e72e0a2",
+    "references/latex-export.md": "bc30075d932b670f7405c72caaf48d2474db36ab1dba38ece7c1113a92ec8f7e",
+    "references/prepare-and-plan.md": "f07351cf896d7dc4aae4114ede0da3ca13d79a3392478247e90e8f925f944c99",
+    "references/source-search.md": "79bf2b722a50adc59d0446faee60a58a3b6954abafa77b227a14403d79a6863d",
+    "references/technical-diagrams.md": "4c6ddd1ab47aec5260dfd7b80284a9a12db534a9a0dd0303ca476e5115fa8865",
+    "references/visual-map-design.md": "d64e87d9c3424bfdf4e837255b7412bb7c91a573323bf518d964dacccf63e0ab",
+    "requirements.txt": "eba706c9d68de87a8b421685604dbbdd6036cb833ed57c4000b1921413cdef41",
+    "scripts/compile_study_pdf.py": "3a41e2df1129ad49d3712f7ffa6e9a0b759bbdf19f85b0c2ecf037fc7dce61c4",
+    "scripts/render_study_pdf.py": "9d75b8592f639a7b797ca4cd64fd123a16ceb6c45b5f9502c31a3a40a69d67c5",
+    "scripts/render_summary_map.py": "79476c6fa9bf6354df7c9ba3d515dc966cc4c24ffa55f782f90cfaecf6e9ef63",
+    "scripts/run-local.ps1": "2aaa5247cbb3e8b15fcf0df41f912bc74129c4566fc3b276ffda5817810fe551",
+    "tests/test_technical_diagrams.py": "f310d49373b6b569077f80ef323de3ce96c4517491096de825e0917f2c900100"
+  }
+}

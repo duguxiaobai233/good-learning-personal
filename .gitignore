@@ -25,3 +25,9 @@
 !/scripts/run-local.ps1
 !/reports/
 !/reports/**
+
+# Technical diagram examples and regression checks
+!/examples/technical-diagrams.md
+!/tests/
+/tests/*
+!/tests/test_technical_diagrams.py
