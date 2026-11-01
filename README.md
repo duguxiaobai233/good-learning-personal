@@ -86,3 +86,7 @@ python scripts/render_summary_map.py examples/summary-map.json summary.svg --png
 2026-10-28 版本增加按内容主动生成专业图的规则，复用 TikZ/PGF 绘制控制框图、信号流图和数据结构状态图。参见 [教学配图规则](references/technical-diagrams.md) 和 [可编译示例](examples/technical-diagrams.md)。
 
 课程源稿中的 `tikz` 围栏将渲染为图，普通代码围栏保留为代码。独立图示文档可用 `render_study_pdf.py 输入.md 输出.tex --kind diagram`，随后用原有编译器生成 PDF；每日课程继续使用 compact/loose 两种排版。源图及公式需要语义核对，PDF 需要实际渲染检查。验证渲染器可运行 `python -m unittest discover -s tests -v`。
+
+## 例题解答优化（2026-11-01）
+
+例题就地提供推理所需的图示与关键关系，明确图号，展开关键因果与计算量的选择，直接完成各问。内部边界检查不全部搬进正文，省略重复限制与无关例外；交付前逐例检查能否独立读懂。详见[本次更新说明](reports/worked-examples-2026-11-01/更新说明.md)和[版本导航](reports/版本导航.md)。
